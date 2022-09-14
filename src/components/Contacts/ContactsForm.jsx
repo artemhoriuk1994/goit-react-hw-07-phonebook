@@ -62,9 +62,7 @@ export const Forms = ({ onSubmit }) => {
                 Phone  </label>
             <Input
                 type="tel"
-                name="
-                
-                "
+                name="number"
                 {...register('number')}
                 placeholder='+380970000000'
             />
