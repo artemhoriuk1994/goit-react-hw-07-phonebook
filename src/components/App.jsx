@@ -27,7 +27,7 @@ export function App() {
     const personalData = {
       name: data.name,
       id: nanoid(),
-      number: data.tel
+      number: data.number
     }
 
     isIncludeName(data.name) ?
