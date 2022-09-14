@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { Formik, Form, Field } from 'formik';
 import { Box } from 'components/box';
+import { useForm } from 'react-hook-form';
 
-const SearchForm = styled(Form)`
+const SearchForm = styled.form`
   margin: ${p => p.theme.space[4]}px 0;
 `
-const Input = styled(Field)`
+const Input = styled.input`
   margin-top: ${p => p.theme.space[2]}px;
   padding: ${p => p.theme.space[3]}px;
   font-size: 16px;
@@ -21,21 +21,23 @@ const Input = styled(Field)`
 }
 `
 export const Filter = ({ filter, onChangeFilter }) => {
+    const { register } = useForm();
     return (
-        <Formik initialValues={{ filter: filter }}>
-            <SearchForm>
-                <Box as="label" display="flex" flexDirection="column">
-                    Find contacts by name
-                    <Input
-                        type="text"
-                        name="filter"
-                        value={filter}
-                        onChange={e => { onChangeFilter(e.target.value) }}
-                        placeholder="Search name"
-                    />
-                </Box>
-            </SearchForm>
-        </Formik>
+        <SearchForm>
+            <Box as="label" display="flex" flexDirection="column">
+                Find contacts by name
+                <Input
+                    type="text"
+                    name="filter"
+                    value={filter}
+                    {...register('filter')}
+                    onChange={e => {
+                        onChangeFilter(e.target.value)
+                    }}
+                    placeholder="Search name"
+                />
+            </Box>
+        </SearchForm>
     )
 };
 
