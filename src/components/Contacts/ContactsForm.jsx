@@ -42,7 +42,6 @@ export const Forms = ({ onSubmit }) => {
         resolver: yupResolver(schem)
     });
 
-
     const submit = (data) => {
         onSubmit(data)
         reset()

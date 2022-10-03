@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Box } from 'components/box';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { filteredContact } from 'redux/reducer';
 
 const SearchForm = styled.form`
   margin: ${p => p.theme.space[4]}px 0;
@@ -20,8 +22,14 @@ const Input = styled.input`
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 `
-export const Filter = ({ filter, onChangeFilter }) => {
+export const Filter = ({ filter }) => {
+    const dispatch = useDispatch();
     const { register } = useForm();
+
+    const onChangeHandler = (e) => {
+        const filtered = e.target.value;
+        dispatch(filteredContact(filtered))
+    }
     return (
         <SearchForm>
             <Box as="label" display="flex" flexDirection="column">
@@ -31,9 +39,7 @@ export const Filter = ({ filter, onChangeFilter }) => {
                     name="filter"
                     value={filter}
                     {...register('filter')}
-                    onChange={e => {
-                        onChangeFilter(e.target.value)
-                    }}
+                    onChange={onChangeHandler}
                     placeholder="Search name"
                 />
             </Box>

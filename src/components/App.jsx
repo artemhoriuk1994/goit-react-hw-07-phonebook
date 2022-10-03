@@ -5,52 +5,41 @@ import Section from "./Section/Section";
 
 import { Container } from "./App.styled";
 import { GlobalStyles } from "./GlobabalStyles";
-import { useState, useEffect } from "react";
-import { nanoid } from "nanoid";
-
+import { useDispatch, useSelector } from "react-redux";
+import { getContacts, getFilter } from "redux/selectors";
+import { addContact, deleteContact } from "redux/reducer";
 
 export function App() {
-  const [contacts, setContacts] = useState(() => {
-    const data = window.localStorage.getItem('Contact info');
-    const parseData = JSON.parse(data);
-    return (parseData ?? []);
-  });
-  const [filtr, setFiltr] = useState('')
-
-
-  useEffect(() => {
-    window.localStorage.setItem('Contact info', JSON.stringify(contacts))
-  }, [contacts])
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
 
   const onFormSubmit = data => {
-    const personalData = {
-      name: data.name,
-      id: nanoid(),
-      number: data.number
-    }
-
     isIncludeName(data.name) ?
       alert(`${data.name} is alredy in your contacts`) :
-      setContacts(state => [...state, personalData]);
+      dispatch(addContact(data));
   };
 
-  const deleteContact = (contactId) => {
-    setContacts(contacts => (
-      contacts.filter(contact => contact.id !== contactId)
-    ))
-  }
 
-  const visibleContacts = () => {
-    const normalize = filtr.toLowerCase();
-    const filtred = contacts.filter(contact => contact.name.toLowerCase().includes(normalize));
-    return filtred
-  }
+
   const isIncludeName = (inputName) => {
     return contacts.find(
       contact => contact.name.toLowerCase() === inputName.toLowerCase()
     )
   }
+
+  const delContact = contacts => {
+    dispatch(deleteContact(contacts))
+  }
+
+  const visibleContacts = () => {
+    const normalize = filter.toLowerCase();
+    const filtred = contacts.filter(contact => contact.name.toLowerCase().includes(normalize));
+    return filtred
+  }
+
+
   return (
     <>
       <Container>
@@ -60,9 +49,8 @@ export function App() {
       </Container>
       <Container>
         <Section title='Contacts' >
-          <Filter onChangeFilter={(input) => setFiltr(input)} filter={filtr} />
-          {contacts.length > 0 ? <ContactsList onDelete={deleteContact} contacts={visibleContacts()} /> : <p>Your phone book is empty</p>}
-
+          <Filter filter={filter} />
+          {contacts.length > 0 ? <ContactsList onDelete={delContact} contacts={visibleContacts()} /> : <p>Your phone book is empty</p>}
         </Section>
       </Container>
       <GlobalStyles />
