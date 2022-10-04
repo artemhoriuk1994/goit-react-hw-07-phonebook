@@ -23,7 +23,7 @@ const sliceFilter = createSlice({
   name: 'filter',
   initialState: '',
   reducers: {
-    filteredContact(state, action) {
+    filteredContact(_, action) {
       return action.payload;
     },
   },

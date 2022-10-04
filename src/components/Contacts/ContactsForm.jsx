@@ -3,9 +3,11 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import Btn from "components/Button/Button";
-import PropTypes from 'prop-types';
 
 import styled from '@emotion/styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/reducer';
 
 
 const FormStyled = styled.form`
@@ -37,17 +39,29 @@ const schem = yup.object().shape({
     number: yup.string().min(13).max(13).required()
 })
 
-export const Forms = ({ onSubmit }) => {
+export const Forms = () => {
+    const dispatch = useDispatch();
+    const contacts = useSelector(getContacts);
+
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schem)
     });
 
-    const submit = (data) => {
-        onSubmit(data)
-        reset()
+    const onFormSubmit = data => {
+        isIncludeName(data.name) ?
+            alert(`${data.name} is alredy in your contacts`) :
+            dispatch(addContact(data));
+        reset();
     };
+
+    const isIncludeName = (inputName) => {
+        return contacts.find(
+            contact => contact.name.toLowerCase() === inputName.toLowerCase()
+        )
+    }
+
     return (
-        <FormStyled onSubmit={handleSubmit(submit)}>
+        <FormStyled onSubmit={handleSubmit(onFormSubmit)}>
             <label htmlFor='name' >
                 Name </label>
             <Input
@@ -71,7 +85,4 @@ export const Forms = ({ onSubmit }) => {
     )
 }
 
-Forms.propTypes = {
-    onSubmit: PropTypes.func.isRequired
-};
 

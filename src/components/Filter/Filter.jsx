@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
 import { Box } from 'components/box';
 import { useForm } from 'react-hook-form';
@@ -22,14 +21,16 @@ const Input = styled.input`
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 `
-export const Filter = ({ filter }) => {
+export const Filter = () => {
     const dispatch = useDispatch();
     const { register } = useForm();
+
 
     const onChangeHandler = (e) => {
         const filtered = e.target.value;
         dispatch(filteredContact(filtered))
     }
+
     return (
         <SearchForm>
             <Box as="label" display="flex" flexDirection="column">
@@ -37,7 +38,6 @@ export const Filter = ({ filter }) => {
                 <Input
                     type="text"
                     name="filter"
-                    value={filter}
                     {...register('filter')}
                     onChange={onChangeHandler}
                     placeholder="Search name"
@@ -47,9 +47,5 @@ export const Filter = ({ filter }) => {
     )
 };
 
-Filter.Filter = {
-    filter: PropTypes.string.isRequired,
-    handleFilterChange: PropTypes.func.isRequired,
-};
 
 export default Filter;
