@@ -5,10 +5,10 @@ const override = {
     margin: '0 auto',
 };
 
-export function Loader() {
+export function Loader({ size }) {
     return (
         <>
-            <HashLoader color="#676767" cssOverride={override} loading size={100} />
+            <HashLoader color="#676767" cssOverride={override} loading size={size} />
         </>
     );
 }

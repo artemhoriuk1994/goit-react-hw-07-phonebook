@@ -7,10 +7,10 @@ export const Button = styled.button`
   border: ${p => p.theme.borders.none};
   border-radius: ${p => p.theme.radii.sm};
   background-color: ${p => {
-        return p.name === "DeleteBTN"
-            ? p.theme.colors.redAccent
-            : p.theme.colors.primary
-    }};
+    return p.name === "DeleteBTN"
+      ? p.theme.colors.redAccent
+      : p.theme.colors.primary
+  }};
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
   cursor: pointer;
   :hover,
@@ -18,4 +18,8 @@ export const Button = styled.button`
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
   }
   transition: box-shadow 300ms linear;
+  &:disabled {
+    background-color: transparent;
+    box-shadow: none;
+  }
 `;

@@ -5,6 +5,7 @@ import Btn from "components/Button/Button";
 import styled from '@emotion/styled';
 import { useAddContactsMutation, useGetContactsQuery } from 'redux/contactSlice';
 import toast, { Toaster } from 'react-hot-toast';
+import { Loader } from 'components/Loader/Loader';
 
 
 const FormStyled = styled.form`
@@ -37,10 +38,8 @@ const schem = yup.object().shape({
 })
 
 export const Forms = () => {
-    // const dispatch = useDispatch();
-    // const contacts = useSelector(getContacts);
-    const [addContact] = useAddContactsMutation();
-    const { data: contacts, isFetching } = useGetContactsQuery();
+    const [addContact, { isLoading }] = useAddContactsMutation();
+    const { data: contacts } = useGetContactsQuery();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schem)
@@ -79,7 +78,7 @@ export const Forms = () => {
                 placeholder='+380970000000'
             />
             <ErrorStyled>{errors.number?.message}</ErrorStyled>
-            <Btn type="submit" disabled={isFetching}>Add contact</Btn>
+            <Btn type="submit" disabled={isLoading}>{isLoading ? <Loader size={50} /> : 'Add contact'}</Btn>
             <Toaster position="top-right"
                 reverseOrder={false} />
         </FormStyled>
