@@ -1,13 +1,10 @@
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-
 import Btn from "components/Button/Button";
-
 import styled from '@emotion/styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { getContacts } from 'redux/selectors';
-import { addContact } from 'redux/reducer';
+import { useAddContactsMutation, useGetContactsQuery } from 'redux/contactSlice';
+import toast, { Toaster } from 'react-hot-toast';
 
 
 const FormStyled = styled.form`
@@ -36,21 +33,23 @@ const Input = styled.input`
 `
 const schem = yup.object().shape({
     name: yup.string().required(),
-    number: yup.string().min(13).max(13).required()
+    phone: yup.string().min(13).max(13).required()
 })
 
 export const Forms = () => {
-    const dispatch = useDispatch();
-    const contacts = useSelector(getContacts);
+    // const dispatch = useDispatch();
+    // const contacts = useSelector(getContacts);
+    const [addContact] = useAddContactsMutation();
+    const { data: contacts, isFetching } = useGetContactsQuery();
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(schem)
     });
 
-    const onFormSubmit = data => {
+    const onFormSubmit = async data => {
         isIncludeName(data.name) ?
-            alert(`${data.name} is alredy in your contacts`) :
-            dispatch(addContact(data));
+            toast.error(`${data.name} is alredy in your contacts`) :
+            await addContact(data)
         reset();
     };
 
@@ -75,12 +74,14 @@ export const Forms = () => {
                 Phone  </label>
             <Input
                 type="tel"
-                name="number"
-                {...register('number')}
+                name="phone"
+                {...register('phone')}
                 placeholder='+380970000000'
             />
             <ErrorStyled>{errors.number?.message}</ErrorStyled>
-            <Btn type="submit">Add contact</Btn>
+            <Btn type="submit" disabled={isFetching}>Add contact</Btn>
+            <Toaster position="top-right"
+                reverseOrder={false} />
         </FormStyled>
     )
 }

@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { Box } from 'components/box';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { filteredContact } from 'redux/reducer';
+import { filteredContact } from 'redux/filterSlice';
 
 const SearchForm = styled.form`
   margin: ${p => p.theme.space[4]}px 0;
@@ -22,29 +22,29 @@ const Input = styled.input`
 }
 `
 export const Filter = () => {
-    const dispatch = useDispatch();
-    const { register } = useForm();
+  const dispatch = useDispatch();
+  const { register } = useForm();
 
 
-    const onChangeHandler = (e) => {
-        const filtered = e.target.value;
-        dispatch(filteredContact(filtered))
-    }
+  const onChangeHandler = (e) => {
+    const filtered = e.target.value;
+    dispatch(filteredContact(filtered))
+  }
 
-    return (
-        <SearchForm>
-            <Box as="label" display="flex" flexDirection="column">
-                Find contacts by name
-                <Input
-                    type="text"
-                    name="filter"
-                    {...register('filter')}
-                    onChange={onChangeHandler}
-                    placeholder="Search name"
-                />
-            </Box>
-        </SearchForm>
-    )
+  return (
+    <SearchForm>
+      <Box as="label" display="flex" flexDirection="column">
+        Find contacts by name
+        <Input
+          type="text"
+          name="filter"
+          {...register('filter')}
+          onChange={onChangeHandler}
+          placeholder="Search name"
+        />
+      </Box>
+    </SearchForm>
+  )
 };
 
 

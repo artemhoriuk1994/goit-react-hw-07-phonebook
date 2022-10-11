@@ -1,48 +1,40 @@
 import Btn from 'components/Button/Button';
-import PropTypes from 'prop-types'
 import { ContactItem } from './ContactsList.styled';
 import { Box } from 'components/box';
-import { useDispatch, useSelector } from 'react-redux';
-import { deleteContact } from "redux/reducer";
-import { getContacts, getFilter } from 'redux/selectors';
+import { Loader } from 'components/Loader/Loader'
+import { useDeleteContactMutation, useGetContactsQuery } from 'redux/contactSlice';
+import { useSelector } from 'react-redux';
+import { getFilter } from 'redux/selectors';
+
+
 
 const ContactsList = () => {
-    const dispatch = useDispatch();
     const filter = useSelector(getFilter)
-    const contacts = useSelector(getContacts);
+    const { data: contacts, error, isFetching, isError } = useGetContactsQuery();
+    const [deleteContact] = useDeleteContactMutation();
 
     const visibleContacts = () => {
         const normalize = filter.toLowerCase();
-        const filtred = contacts.filter(contact => contact.name.toLowerCase().includes(normalize));
+        const filtred = contacts?.filter(contact => contact.name.toLowerCase().includes(normalize));
         return filtred
     }
-    const filtredContact = visibleContacts();
-
-    const delContact = contacts => {
-        dispatch(deleteContact(contacts))
-    }
+    const filtredContacts = visibleContacts();
+    const contactInfo = contacts.length > 0 && !isFetching;
 
     return (
         <Box as="ul" display="flex" flexDirection="column" gridGap={4}>
-            {contacts.length > 0 ? (
-                filtredContact.map(contact => (
-                    <ContactItem key={contact.id}>{contact.name}: {contact.number}
-                        <Btn name='DeleteBTN' onClick={() => delContact(contact.id)}>
-                            Delete
-                        </Btn>
-                    </ContactItem>
-                ))
-            ) : (<p>Your phone book is empty</p>)}</Box>
+            {isError && (error.data)}
+            {isFetching && (<Loader />)}
+            {contactInfo ? (filtredContacts.map(contact => (
+                <ContactItem key={contact.id}><p>{contact.name}: {contact.phone}</p>
+                    <Btn name='DeleteBTN' onClick={() => {
+                        deleteContact(contact.id)
+                    }} disabled={isFetching}>
+                        Delete
+                    </Btn>
+                </ContactItem>))) : (<><p>Your phonebook is empty</p></>)}
+        </Box>
     )
 }
 
-ContactsList.propTypes = {
-    contact: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            contact: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired
-        })
-    )
-}
 export default ContactsList;
