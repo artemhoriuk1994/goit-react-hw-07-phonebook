@@ -19,7 +19,7 @@ const ContactsList = () => {
         return filtred
     }
     const filtredContacts = visibleContacts();
-    const contactInfo = contacts.length > 0 && !isFetching;
+    const contactInfo = contacts?.length > 0 && !isFetching;
 
     return (
         <Box as="ul" display="flex" flexDirection="column" gridGap={4}>
